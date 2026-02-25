@@ -80,10 +80,10 @@ public final class JSAndroid {
     }
 
     @JavascriptInterface
-    public void setWebViewFocusable(final boolean enabled) {
+    public void setWebViewFocusable(final boolean focusable) {
         activity.runOnUiThread(() -> {
             final WebView webView = activity.findViewById(R.id.webView);
-            Utils.setWebViewFocusable(webView, enabled);
+            Utils.setWebViewFocusable(webView, focusable);
         });
     }
 

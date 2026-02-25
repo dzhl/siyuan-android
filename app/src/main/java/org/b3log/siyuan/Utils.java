@@ -154,12 +154,12 @@ public final class Utils {
         return applicationInfo.metaData.getString("CHANNEL");
     }
 
-    public static void setWebViewFocusable(final WebView webView, final boolean enabled) {
+    public static void setWebViewFocusable(final WebView webView, final boolean focusable) {
         // 禁止 WebView 获取焦点以防止自动弹出软键盘，软键盘弹出由前端控制
         // Improve soft keyboard toolbar pop-up https://github.com/siyuan-note/siyuan/issues/16548
-        webView.setFocusable(enabled);
-        webView.setFocusableInTouchMode(enabled);
-        if (!enabled) {
+        webView.setFocusable(focusable);
+        webView.setFocusableInTouchMode(focusable);
+        if (!focusable) {
             webView.clearFocus();
         } else {
             webView.requestFocus();
