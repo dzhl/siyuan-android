@@ -181,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements com.blankj.utilco
         if (Utils.isTablet(this)) {
             // 平板上隐藏状态栏 Hide the status bar on tablet https://github.com/siyuan-note/siyuan/issues/12204
             BarUtils.setStatusBarVisibility(this, false);
-            Utils.setImeEnabled(webView, true);
+            Utils.setWebViewFocusable(webView, true);
         } else {
             // 沉浸式状态栏设置
             UltimateBarX.statusBarOnly(this).transparent().light(false).color(Color.parseColor("#1e1e1e")).apply();
@@ -200,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements com.blankj.utilco
         bootDetailsText = findViewById(R.id.bootDetails);
         webView = findViewById(R.id.webView);
         if (!Utils.isTablet(this)) {
-            Utils.setImeEnabled(webView, false);
+            Utils.setWebViewFocusable(webView, false);
         }
 
         webView.setDownloadListener((url, userAgent, contentDisposition, mimetype, contentLength) -> {

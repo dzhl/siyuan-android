@@ -46,7 +46,7 @@ import mobile.Mobile;
  *
  * @author <a href="https://88250.b3log.org">Liang Ding</a>
  * @author <a href="https://github.com/Soltus">绛亽</a>
- * @version 1.5.0.2, Feb 11, 2026
+ * @version 1.5.0.3, Feb 25, 2026
  * @since 1.0.0
  */
 public final class JSAndroid {
@@ -76,6 +76,14 @@ public final class JSAndroid {
             final WebView webView = activity.findViewById(R.id.webView);
             Utils.showKeyboardAndToolbar(webView);
             KeyboardUtils.showSoftInput(activity);
+        });
+    }
+
+    @JavascriptInterface
+    public void setWebViewFocusable(final boolean enabled) {
+        activity.runOnUiThread(() -> {
+            final WebView webView = activity.findViewById(R.id.webView);
+            Utils.setWebViewFocusable(webView, enabled);
         });
     }
 

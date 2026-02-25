@@ -154,7 +154,7 @@ public final class Utils {
         return applicationInfo.metaData.getString("CHANNEL");
     }
 
-    public static void setImeEnabled(final WebView webView, final boolean enabled) {
+    public static void setWebViewFocusable(final WebView webView, final boolean enabled) {
         // 禁止 WebView 获取焦点以防止自动弹出软键盘，软键盘弹出由前端控制
         // Improve soft keyboard toolbar pop-up https://github.com/siyuan-note/siyuan/issues/16548
         webView.setFocusable(enabled);
@@ -187,14 +187,14 @@ public final class Utils {
     public static void showKeyboardAndToolbar(final WebView webView) {
         webView.post(() -> {
             webView.postDelayed(() -> webView.evaluateJavascript("javascript:showKeyboardToolbar();", null), 288);
-            Utils.setImeEnabled(webView, true);
+            Utils.setWebViewFocusable(webView, true);
         });
     }
 
     public static void hideKeyboardAndToolbar(final WebView webView) {
         webView.post(() -> {
             webView.evaluateJavascript("javascript:hideKeyboardToolbar();document.activeElement.blur();", null);
-            Utils.setImeEnabled(webView, false);
+            Utils.setWebViewFocusable(webView, false);
         });
     }
 
