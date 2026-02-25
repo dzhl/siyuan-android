@@ -124,9 +124,9 @@ public class MainActivity extends AppCompatActivity implements com.blankj.utilco
 
         try {
             final String script;
-            if(!StringUtils.isEmpty(intent.getStringExtra("oidcCallback"))){
-                script =  "window.handleOidcCallbackLink(" + JSONObject.quote(intent.getStringExtra("oidcCallback")) + ");";
-            }else if (!StringUtils.isEmpty(intent.getStringExtra("blockURL"))){
+            if (!StringUtils.isEmpty(intent.getStringExtra("oidcCallback"))) {
+                script = "window.handleOidcCallbackLink(" + JSONObject.quote(intent.getStringExtra("oidcCallback")) + ");";
+            } else if (!StringUtils.isEmpty(intent.getStringExtra("blockURL"))) {
                 script = "window.openFileByURL(" + JSONObject.quote(intent.getStringExtra("blockURL")) + ");";
             } else {
                 return;
@@ -257,13 +257,11 @@ public class MainActivity extends AppCompatActivity implements com.blankj.utilco
             @Override
             public WebResourceResponse shouldInterceptRequest(final WebView view, final WebResourceRequest request) {
                 final Map<String, String> headers = request.getRequestHeaders();
-
-                if (request.getUrl().toString().toLowerCase().contains("youtube")) {
+                final String lowerCaseURL = request.getUrl().toString().toLowerCase();
+                if (lowerCaseURL.contains("youtube")) {
                     // YouTube 设置 Referer https://github.com/siyuan-note/siyuan/issues/16319
                     headers.put("Referer", "https://b3log.org/siyuan/");
-                }
-
-                if (request.getUrl().toString().contains("qpic")) {
+                } else if (lowerCaseURL.contains("qpic")) {
                     // 改进公众号图片加载 https://github.com/siyuan-note/siyuan/issues/16326
                     return handleRequest(request.getUrl().toString(), headers);
                 }
