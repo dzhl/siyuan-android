@@ -17,17 +17,22 @@
  */
 package org.b3log.siyuan;
 
+import android.Manifest;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.app.ShareCompat;
 import androidx.core.content.FileProvider;
 
@@ -35,6 +40,8 @@ import com.blankj.utilcode.util.BarUtils;
 import com.blankj.utilcode.util.KeyboardUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.zackratos.ultimatebarx.ultimatebarx.java.UltimateBarX;
+
+import org.json.JSONObject;
 
 import java.io.File;
 import java.net.URLDecoder;
@@ -46,7 +53,7 @@ import mobile.Mobile;
  *
  * @author <a href="https://88250.b3log.org">Liang Ding</a>
  * @author <a href="https://github.com/Soltus">绛亽</a>
- * @version 1.5.0.3, Feb 25, 2026
+ * @version 1.6.0.0, Feb 28, 2026
  * @since 1.0.0
  */
 public final class JSAndroid {
@@ -54,6 +61,32 @@ public final class JSAndroid {
 
     public JSAndroid(final MainActivity activity) {
         this.activity = activity;
+    }
+
+    @JavascriptInterface
+    public void sendNotification(final String jsonPayload) {
+        JSONObject payload;
+        try {
+            payload = new JSONObject(jsonPayload);
+        } catch (final Exception e) {
+            Utils.logError("JSAndroid", "sendNotification failed: invalid json payload [" + jsonPayload + "]", e);
+            return;
+        }
+
+        final String title = payload.optString("title");
+        final String content = payload.optString("body");
+
+        final int notifyId = (int) System.currentTimeMillis();
+        final NotificationCompat.Builder builder = new NotificationCompat.Builder(activity, "siyuan_js_android")
+                .setContentTitle(title)
+                .setContentText(content)
+                .setAutoCancel(true);
+        if (ActivityCompat.checkSelfPermission(this.activity, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            Utils.showToast(this.activity, "没有通知权限，无法发送通知 / No notification permission, unable to send notification");
+            return;
+        }
+
+        NotificationManagerCompat.from(this.activity).notify(notifyId, builder.build());
     }
 
     @JavascriptInterface
