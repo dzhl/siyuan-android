@@ -41,8 +41,6 @@ import com.blankj.utilcode.util.KeyboardUtils;
 import com.blankj.utilcode.util.StringUtils;
 import com.zackratos.ultimatebarx.ultimatebarx.java.UltimateBarX;
 
-import org.json.JSONObject;
-
 import java.io.File;
 import java.net.URLDecoder;
 
@@ -64,22 +62,11 @@ public final class JSAndroid {
     }
 
     @JavascriptInterface
-    public void sendNotification(final String jsonPayload) {
-        JSONObject payload;
-        try {
-            payload = new JSONObject(jsonPayload);
-        } catch (final Exception e) {
-            Utils.logError("JSAndroid", "sendNotification failed: invalid json payload [" + jsonPayload + "]", e);
-            return;
-        }
-
-        final String title = payload.optString("title");
-        final String content = payload.optString("body");
-
+    public void sendNotification(final String title, final String body) {
         final int notifyId = (int) System.currentTimeMillis();
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(activity, "siyuan_js_android")
                 .setContentTitle(title)
-                .setContentText(content)
+                .setContentText(body)
                 .setAutoCancel(true);
         if (ActivityCompat.checkSelfPermission(this.activity, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             Utils.showToast(this.activity, "没有通知权限，无法发送通知 / No notification permission, unable to send notification");
