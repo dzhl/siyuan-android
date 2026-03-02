@@ -87,8 +87,10 @@ public final class JSAndroid {
 
         final int notifyId = (int) System.currentTimeMillis();
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(activity, notificationChannelId)
+                .setSmallIcon(R.drawable.icon)
                 .setContentTitle(title)
                 .setContentText(body)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setAutoCancel(true);
         NotificationManagerCompat.from(this.activity).notify(notifyId, builder.build());
     }

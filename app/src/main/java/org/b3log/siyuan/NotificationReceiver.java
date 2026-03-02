@@ -50,8 +50,10 @@ public class NotificationReceiver extends BroadcastReceiver {
         final String body = intent.getStringExtra("body");
         final int notifyId = (int) System.currentTimeMillis();
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "siyuan_js_android")
+                .setSmallIcon(R.drawable.icon)
                 .setContentTitle(title)
                 .setContentText(body)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setAutoCancel(true);
 
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
