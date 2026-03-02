@@ -31,6 +31,12 @@
     <!-- 添加桌面快捷方式 -->
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
 
+    <!-- 预约通知 -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
+    <!-- 监听系统广播以实现预约通知 -->
+    <receiver android:name=".NotificationReceiver" />
+
     <application
         android:name=".App"
         android:icon="@mipmap/ic_launcher"

@@ -18,6 +18,8 @@
 package org.b3log.siyuan;
 
 import android.Manifest;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.ClipboardManager;
@@ -31,6 +33,7 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.AlarmManagerCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.app.ShareCompat;
@@ -51,7 +54,7 @@ import mobile.Mobile;
  *
  * @author <a href="https://88250.b3log.org">Liang Ding</a>
  * @author <a href="https://github.com/Soltus">绛亽</a>
- * @version 1.6.0.0, Feb 28, 2026
+ * @version 1.6.0.1, Mar 2, 2026
  * @since 1.0.0
  */
 public final class JSAndroid {
@@ -62,17 +65,31 @@ public final class JSAndroid {
     }
 
     @JavascriptInterface
-    public void sendNotification(final String title, final String body) {
-        final int notifyId = (int) System.currentTimeMillis();
-        final NotificationCompat.Builder builder = new NotificationCompat.Builder(activity, "siyuan_js_android")
-                .setContentTitle(title)
-                .setContentText(body)
-                .setAutoCancel(true);
+    public void sendNotification(final String title, final String body, final int delayInSeconds) {
         if (ActivityCompat.checkSelfPermission(this.activity, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
             Utils.showToast(this.activity, "没有通知权限，无法发送通知 / No notification permission, unable to send notification");
             return;
         }
 
+        if (0 < delayInSeconds) {
+            final Intent intent = new Intent(this.activity, NotificationReceiver.class);
+            intent.putExtra("title", title);
+            intent.putExtra("body", body);
+            final PendingIntent pendingIntent = PendingIntent.getBroadcast(this.activity, (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+            AlarmManagerCompat.setExactAndAllowWhileIdle((AlarmManager) this.activity.getSystemService(Context.ALARM_SERVICE), AlarmManager.ELAPSED_REALTIME_WAKEUP, delayInSeconds * 1000L, pendingIntent);
+            return;
+        }
+
+        final String notificationChannelId = "siyuan_js_android";
+        if (!NotificationReceiver.createNotificationChannel(activity, notificationChannelId)) {
+            return;
+        }
+
+        final int notifyId = (int) System.currentTimeMillis();
+        final NotificationCompat.Builder builder = new NotificationCompat.Builder(activity, notificationChannelId)
+                .setContentTitle(title)
+                .setContentText(body)
+                .setAutoCancel(true);
         NotificationManagerCompat.from(this.activity).notify(notifyId, builder.build());
     }
 

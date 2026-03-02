@@ -18,13 +18,10 @@
 package org.b3log.siyuan;
 
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.IBinder;
 
@@ -76,16 +73,12 @@ public class KeepLiveService extends Service {
             resultPendingIntent = PendingIntent.getActivity(this, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         }
 
-        final String NOTIFICATION_CHANNEL_ID = BuildConfig.APPLICATION_ID;
-        final String channelName = "SiYuan Kernel Service";
-        final NotificationChannel chan = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_NONE);
-        chan.setLightColor(Color.BLUE);
-        chan.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
-        final NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if (null != manager) {
-            manager.createNotificationChannel(chan);
+        final String notificationChannelId = "siyuan_keep_live_service";
+        if (!NotificationReceiver.createNotificationChannel(this, notificationChannelId)) {
+            return;
         }
-        final NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
+
+        final NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, notificationChannelId);
         final String[] texts = getNotificationTexts();
         if (null == texts || 1 > texts.length) {
             Utils.logError("keeplive", "notification texts is empty");
